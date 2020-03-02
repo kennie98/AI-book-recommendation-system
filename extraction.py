@@ -15,4 +15,6 @@ if __name__ == '__main__':
     df.head()
     df1 = df[['20', '100', '245', '520', '650', '655']]
     df1.columns = ['ISBN', 'Author', 'Title', 'Summary', 'Topical Term', 'Genre']
-    print(df1)
+    #df['20'].values
+    df2 = df1['ISBN']
+    print(df2)
