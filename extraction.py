@@ -8,6 +8,14 @@ class Marc_Extractor(object):
       #df = pd.read_csv(marc_file)
       pass
 
+def clean_isbn(x):
+    regex = r"\ba\w+"
+    if re.search(regex, x):
+        match = re.search(regex, x)
+        result = match.group()
+        return result
+    else:
+        return 0
 
 
 if __name__ == '__main__':
@@ -16,13 +24,11 @@ if __name__ == '__main__':
     df.head()
     df1 = df[['20', '100', '245', '520', '650', '655']]
     df1.columns = ['ISBN', 'Author', 'Title', 'Summary', 'Topical Term', 'Genre']
-    #df['20'].values
-    df2 = df1['ISBN']
-    #print(df2)
-    #x = re.search("^$a.*;$", txt)
-    txt = "\\\\$a0802019862$(pa.:)$c3.95"
 
-    x = re.search(r"\ba\w+", txt)
-    print(x)
-    print("string is ", x.group())
+    df2 = df1[df1['ISBN'].notna()]
+
+    df2 = df2[df2.ISBN.str.contains('a')]
+    df3 = df2['ISBN'].apply(lambda x: clean_isbn(x))
+    print(df3)
+
 
