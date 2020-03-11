@@ -13,9 +13,20 @@ def clean_isbn(x):
     if re.search(regex, x):
         match = re.search(regex, x)
         result = match.group()
+        result = result.replace('a', '')
         return result
     else:
-        return 0
+        return x
+
+def clean_author(x):
+    #regex = r"[$]\w+"
+    regex = r"[$a\s]\w+"
+    if re.search(regex, x):
+        match = re.findall(regex, x)
+        #result = str(match)
+        return match
+    else:
+        return x
 
 
 if __name__ == '__main__':
@@ -27,8 +38,11 @@ if __name__ == '__main__':
 
     df2 = df1[df1['ISBN'].notna()]
 
-    df2 = df2[df2.ISBN.str.contains('a')]
-    df3 = df2['ISBN'].apply(lambda x: clean_isbn(x))
-    print(df3)
+    df2 = df2[df2.ISBN.str.contains('[$]a', regex=True)]
+
+    df2['ISBN'] = df2['ISBN'].apply(lambda x: clean_isbn(x))
+    df2['Author'] = df2['Author'].astype(str).apply(lambda x: clean_author(x))
+    print(df2)
+
 
 
