@@ -18,15 +18,33 @@ def clean_isbn(x):
     else:
         return x
 
+
+def lst_to_str(s):
+
+    str1 = ""
+
+    for ele in s:
+        str1 += ele
+
+    return str1
+
+
 def clean_author(x):
-    #regex = r"[$]\w+"
-    regex = r"[$a\s]\w+"
-    if re.search(regex, x):
-        match = re.findall(regex, x)
-        #result = str(match)
+    regex1 = r"[$a\s]\w+"
+    regex2 = r"[$]a\w+"
+    if re.search(regex1, x):
+        match = re.findall(regex1, x)
+        match = lst_to_str(match)
+        match = match.replace(' ', '_')
+        match = re.findall(regex2, match)
+        match = lst_to_str(match)
+        match = match.replace('_', ' ').replace('$a', '')
         return match
     else:
         return x
+
+
+
 
 
 if __name__ == '__main__':
