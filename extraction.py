@@ -48,15 +48,31 @@ def clean_title(x):
     regex1 = r"[$a+-]\w+"
     regex2 = r"[$]a\w+"
     if re.search(regex1, x):
-        x = x.replace(' ', '_').replace(',', '_').replace('-', '___')
+        x = x.replace(' ', '_').replace(',', '_').replace('-', '___').replace('\'', '____')
         match = re.findall(regex1, x)
         match = lst_to_str(match)
         match = re.findall(regex2, match)
         match = lst_to_str(match)
-        match = match.replace('___', '-').replace('__', ',_').replace('_', ' ').replace('$a', '')
+        match = match.replace('____', '\'').replace('___', '-').replace('__', ',_').replace('_', ' ').replace('$a', '')
         return match
     else:
         return x
+
+
+
+def clean_summary(x):
+
+    regex = r"\ba\w+"
+
+    if re.search(regex, x):
+        x = x.replace(' ', '_').replace(',', '_').replace('-', '___').replace('.', '____').replace('\'', '_____')
+        match = re.search(regex, x)
+        result = match.group()
+        result = result.replace('a', '', 1).replace('_____', '\'').replace('____', '.').replace('___', '-').replace('__', ',_').replace('_', ' ')
+        return result
+    else:
+        return x
+
 
 
 
@@ -65,7 +81,7 @@ if __name__ == '__main__':
 
     df.head()
     df1 = df[['20', '100', '245', '520', '650', '655']]
-    df1.columns = ['ISBN', 'Author', 'Title', 'Summary', 'Topical Term', 'Genre']
+    df1.columns = ['ISBN', 'Author', 'Title', 'Summary', 'Topical_Term', 'Genre']
 
     df2 = df1[df1['ISBN'].notna()]
 
@@ -74,7 +90,7 @@ if __name__ == '__main__':
     df2['ISBN'] = df2['ISBN'].apply(lambda x: clean_isbn(x))
     df2['Author'] = df2['Author'].astype(str).apply(lambda x: clean_author(x))
     df2['Title'] = df2['Title'].apply(lambda x: clean_title(x))
-    print(df2['Title'])
+    df2['Summary'] = df2['Summary'].astype(str).apply(lambda x: clean_summary(x))
     print(df2)
 
 
