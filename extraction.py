@@ -44,6 +44,19 @@ def clean_author(x):
         return x
 
 
+def clean_title(x):
+    regex1 = r"[$a+-]\w+"
+    regex2 = r"[$]a\w+"
+    if re.search(regex1, x):
+        x = x.replace(' ', '_').replace(',', '_').replace('-', '___')
+        match = re.findall(regex1, x)
+        match = lst_to_str(match)
+        match = re.findall(regex2, match)
+        match = lst_to_str(match)
+        match = match.replace('___', '-').replace('__', ',_').replace('_', ' ').replace('$a', '')
+        return match
+    else:
+        return x
 
 
 
@@ -60,6 +73,8 @@ if __name__ == '__main__':
 
     df2['ISBN'] = df2['ISBN'].apply(lambda x: clean_isbn(x))
     df2['Author'] = df2['Author'].astype(str).apply(lambda x: clean_author(x))
+    df2['Title'] = df2['Title'].apply(lambda x: clean_title(x))
+    print(df2['Title'])
     print(df2)
 
 
