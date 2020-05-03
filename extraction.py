@@ -1,12 +1,15 @@
 import pandas as pd
 import re
 
-#MARC_FILE = 'first_thoudsand_rows.csv'
+
+# MARC_FILE = 'first_thoudsand_rows.csv'
+
 
 class Marc_Extractor(object):
-  def __init__(self):
-      #df = pd.read_csv(marc_file)
-      pass
+    def __init__(self):
+        # df = pd.read_csv(marc_file)
+        pass
+
 
 def clean_isbn(x):
     regex = r"\ba\w+"
@@ -20,7 +23,6 @@ def clean_isbn(x):
 
 
 def lst_to_str(s):
-
     str1 = ""
 
     for ele in s:
@@ -59,23 +61,21 @@ def clean_title(x):
         return x
 
 
-
 def clean_summary(x):
-
     regex = r"\ba\w+"
 
     if re.search(regex, x):
         x = x.replace(' ', '_').replace(',', '_').replace('-', '___').replace('.', '____').replace('\'', '_____')
         match = re.search(regex, x)
         result = match.group()
-        result = result.replace('a', '', 1).replace('_____', '\'').replace('____', '.').replace('___', '-').replace('__', ',_').replace('_', ' ')
+        result = result.replace('a', '', 1).replace('_____', '\'').replace('____', '.').replace('___', '-').replace(
+            '__', ',_').replace('_', ' ')
         return result
     else:
         return x
 
 
 def clean_topical_term(x):
-
     x = x.replace(' ', '_')
 
     regex1 = r"[$]\w+"
@@ -99,11 +99,10 @@ def clean_genre(x):
         return x
 
 
-
 if __name__ == '__main__':
-    df = pd.read_csv('first_thoudsand_rows.csv')
+    df = pd.read_csv('hplbib_1000.csv')
 
-    df.head()
+    # df.head()
     df1 = df[['20', '100', '245', '520', '650', '655']]
     df1.columns = ['ISBN', 'Author', 'Title', 'Summary', 'Topical_Term', 'Genre']
 
@@ -118,6 +117,3 @@ if __name__ == '__main__':
     df2['Topical_Term'] = df2['Topical_Term'].astype(str).apply(lambda x: clean_topical_term(x))
     df2['Genre'] = df2['Genre'].astype(str).apply(lambda x: clean_genre(x))
     print(df2)
-
-
-
