@@ -161,15 +161,26 @@ def clean_summary(x):
         return x
 
 
-def clean_topical_term(x):
-    x = x.replace(' ', '_')
-    regex1 = r"[$]\w+"
+def topical_main(x):
+    #x = x.replace(' ', '_')
+    regex1 = r"[$]a\w+"
     if re.search(regex1, x):
         match = re.findall(regex1, x)
         result = lst_to_str(match).replace('_', ' ')
         return result
     else:
         return x
+
+
+def topical_geographic(x):
+    x = x.replace(' ', '_')
+    regex1 = r"[$]z\w+"
+    if re.search(regex1, x):
+        match = re.findall(regex1, x)
+        result = lst_to_str(match).replace('_', ' ')
+        return result
+    else:
+        return ''
 
 
 def clean_genre(x):
@@ -197,11 +208,14 @@ if __name__ == '__main__':
     df2 = df1[df1['ISBN'].notna()]
 
     df2 = df2[df2.ISBN.str.contains('[$]a', regex=True)]
+    df2['Topical_Main'] = df2['Topical_Term']
+    df2['Topical_Geographic'] = df2['Topical_Term']
 
     df2['ISBN'] = df2['ISBN'].apply(lambda x: clean_isbn(x))
     df2['Author'] = df2['Author'].astype(str).apply(lambda x: clean_author(x))
     df2['Title'] = df2['Title'].apply(lambda x: clean_title(x))
     df2['Summary'] = df2['Summary'].astype(str).apply(lambda x: clean_summary(x))
-    df2['Topical_Term'] = df2['Topical_Term'].astype(str).apply(lambda x: clean_topical_term(x))
+    df2['Topical_Main'] = df2['Topical_Main'].astype(str).apply(lambda x: topical_main(x))
+    df2['Topical_Geographic'] = df2['Topical_Geographic'].astype(str).apply(lambda x: topical_geographic(x))
     df2['Genre'] = df2['Genre'].astype(str).apply(lambda x: clean_genre(x))
     print(df2)
