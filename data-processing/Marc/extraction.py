@@ -162,11 +162,11 @@ def clean_summary(x):
 
 
 def topical_main(x):
-    #x = x.replace(' ', '_')
+    x = x.replace(' ', '_')
     regex1 = r"[$]a\w+"
     if re.search(regex1, x):
         match = re.findall(regex1, x)
-        result = lst_to_str(match).replace('_', ' ')
+        result = lst_to_str(match).replace('_', ' ').replace('$a', ' ')
         return result
     else:
         return x
@@ -177,7 +177,7 @@ def topical_geographic(x):
     regex1 = r"[$]z\w+"
     if re.search(regex1, x):
         match = re.findall(regex1, x)
-        result = lst_to_str(match).replace('_', ' ')
+        result = lst_to_str(match).replace('_', ' ').replace('$z', '')
         return result
     else:
         return ''
