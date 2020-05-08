@@ -2,6 +2,7 @@ import pandas as pd
 import re
 import marcformat
 
+
 class MarcExtractor(object):
     tag_marc_file = 'MARC_FILE'
     tag_filter_columns = 'FILTER_COLUMNS'
@@ -46,7 +47,10 @@ class MarcExtractor(object):
             elif column == 'Summary':
                 self.df2[column] = self.df2[column].astype(str).apply(lambda x: self.__clean_summary(x))
             elif column == 'Topical_Term':
-                self.df2[column] = self.df2[column].astype(str).apply(lambda x: self.__clean_topical_term(x))
+                self.df2['Topical_Main'] = self.df2[column].astype(str).apply(lambda x: self.__topical_main(x))
+                self.df2['Topical_Geographic'] = self.df2[column].astype(str).apply(
+                    lambda x: self.__topical_geographic(x))
+                self.df2.drop('Topical_Term', axis=1, inplace=True)
             elif column == 'Genre':
                 self.df2[column] = self.df2[column].astype(str).apply(lambda x: self.__clean_genre(x))
             else:
@@ -120,6 +124,26 @@ class MarcExtractor(object):
             return result
         else:
             return x
+
+    def __topical_main(self, x):
+        x = x.replace(' ', '_')
+        regex1 = r"[$]a\w+"
+        if re.search(regex1, x):
+            match = re.findall(regex1, x)
+            result = self.__lst_to_str(match).replace('_', ' ').replace('$a', ' ')
+            return result
+        else:
+            return x
+
+    def __topical_geographic(self, x):
+        x = x.replace(' ', '_')
+        regex1 = r"[$]z\w+"
+        if re.search(regex1, x):
+            match = re.findall(regex1, x)
+            result = self.__lst_to_str(match).replace('_', ' ').replace('$z', '')
+            return result
+        else:
+            return ''
 
     def __clean_genre(self, x):
         regex = r"\ba\w+"
