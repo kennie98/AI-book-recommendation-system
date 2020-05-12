@@ -126,10 +126,11 @@ class MarcExtractor(object):
         if re.search(regex, x):
             x = x.replace(' ', '_').replace(',', '_').replace('-', '___').replace('.', '____').replace('\'', '_____')
             match = re.search(regex, x)
-            result = match.group()
-            result = result.replace('a', '', 1).replace('_____', '\'').replace('____', '.').replace('___', '-').replace(
-                '__', ',_').replace('_', ' ')
-            return result
+            if match:
+                result = match.group()
+                result = result.replace('a', '', 1).replace('_____', '\'').replace('____', '.').replace('___', '-').replace(
+                    '__', ',_').replace('_', ' ')
+                return result
         else:
             return x
 
