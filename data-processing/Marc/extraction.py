@@ -9,13 +9,30 @@ class MarcExtractor(object):
     marcFile = ''
     filteredColumns = []
     df = pd.DataFrame()
+    df1 = pd.DataFrame()
     df2 = pd.DataFrame()
+    chunkSize = 1000
+    count = 0
 
     def __init__(self, config_file):
         self.__processConfigFile(config_file)
-        self.df = pd.read_csv(self.marcFile)
-        self.df2 = self.__filterColumns()
         pass
+
+    def processDataSet(self):
+        header = pd.DataFrame()
+        for chunk in pd.read_csv(self.marcFile, chunksize=self.chunkSize):
+            if self.count == 0:
+                header = chunk.columns
+            else:
+                chunk.columns = header
+            self.count += 1
+            print(self.count)
+            self.df2 = self.__filterColumns(chunk)
+            self.__processColumns()
+            if self.df1.empty:
+                self.df1 = self.df2
+            else:
+                self.df1 = pd.concat([self.df1, self.df2])
 
     def __processConfigFile(self, config_file):
         marc_file = re.compile(self.tag_marc_file + '\s*\=\s*')
@@ -26,17 +43,18 @@ class MarcExtractor(object):
                     self.marcFile = line.split('=')[-1].strip()
                 elif re.search(filter_columns, line):
                     self.filteredColumns.extend(line.split('=')[-1].replace(' ', '').split(','))
+                    self.filteredColumns = [i.zfill(3) for i in self.filteredColumns]
         configFile.close()
         pass
 
-    def __filterColumns(self):
-        df = self.df[self.filteredColumns]
-        df.columns = [marcformat.marcColumnDirectory[i.zfill(3)] for i in self.filteredColumns]
+    def __filterColumns(self, df):
+        df = df[self.filteredColumns]
+        df.columns = [marcformat.marcColumnDirectory[i] for i in self.filteredColumns]
         df = df[df['ISBN'].notna()]
         df = df[df.ISBN.str.contains('[$]a', regex=True)]
         return df
 
-    def processDataSet(self):
+    def __processColumns(self):
         for column in self.df2:
             if column == "ISBN":
                 self.df2[column] = self.df2[column].apply(lambda x: self.__clean_isbn(x))
@@ -58,7 +76,7 @@ class MarcExtractor(object):
         pass
 
     def getResultDF(self):
-        return self.df2
+        return self.df1
 
     @staticmethod
     def __lst_to_str(s):
