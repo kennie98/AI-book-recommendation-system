@@ -145,23 +145,27 @@ class MarcExtractor(object):
 
     def __topical_main(self, x):
         x = x.replace(' ', '_')
-        regex1 = r"[$]a\w+"
+        regex1 = r"\b\$v\w+|\$a\w+"
         if re.search(regex1, x):
             match = re.findall(regex1, x)
-            result = self.__lst_to_str(match).replace('_', ' ').replace('$a', ' ')
+            result = self.__lst_to_str(match).replace('_', ' ')
+            if result.index('$a') == 0:
+                result = result.replace('$a', '', 1).replace('$a', ',').replace('$v', ',')
+            elif result.index('$v') == 0:
+                result = result.replace('$v', '', 1).replace('$a', ',').replace('$a', ',')
             return result
-        else:
-            return x
+        # else:
+        #     return x
 
     def __topical_geographic(self, x):
         x = x.replace(' ', '_')
         regex1 = r"[$]z\w+"
         if re.search(regex1, x):
             match = re.findall(regex1, x)
-            result = self.__lst_to_str(match).replace('_', ' ').replace('$z', '')
+            result = self.__lst_to_str(match).replace('_', ' ')
+            if result.index('$z') == 0:
+                result = result.replace('$z', '', 1).replace('$z', ',')
             return result
-        else:
-            return ''
 
     def __clean_genre(self, x):
         regex = r"\ba\w+"
@@ -178,3 +182,4 @@ if __name__ == '__main__':
     marcExtractor = MarcExtractor('config.ini')
     marcExtractor.processDataSet()
     df = marcExtractor.getResultDF()
+    print(df)
