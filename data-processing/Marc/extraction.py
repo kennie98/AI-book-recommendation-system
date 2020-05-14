@@ -20,7 +20,7 @@ class MarcExtractor(object):
 
     def processDataSet(self):
         header = pd.DataFrame()
-        for chunk in pd.read_csv(self.marcFile, chunksize=self.chunkSize):
+        for chunk in pd.read_csv(self.marcFile, chunksize=self.chunkSize, encoding='latin1'):
             if self.count == 0:
                 header = chunk.columns
             else:
@@ -51,7 +51,8 @@ class MarcExtractor(object):
         df = df[self.filteredColumns]
         df.columns = [marcformat.marcColumnDirectory[i] for i in self.filteredColumns]
         df = df[df['ISBN'].notna()]
-        df = df[df.ISBN.str.contains('[$]a', regex=True)]
+        df = df[df['Title'].notna()]
+        #df = df[df.ISBN.str.contains('[$]a', regex=True)]
         return df
 
     def __processColumns(self):
@@ -88,7 +89,8 @@ class MarcExtractor(object):
             match = re.search(regex, x)
             result = match.group()
             result = result.replace('a', '')
-            return result
+            if result:
+              return result
         else:
             return x
 
