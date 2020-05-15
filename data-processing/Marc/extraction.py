@@ -91,8 +91,8 @@ class MarcExtractor(object):
             result = result.replace('a', '')
             if result:
               return result
-        else:
-            return x
+        # else:
+        #     return x
 
     def __clean_author(self, x):
         regex1 = r"[$a\s]\w+"
@@ -185,4 +185,5 @@ if __name__ == '__main__':
     marcExtractor = MarcExtractor('config.ini')
     marcExtractor.processDataSet()
     df = marcExtractor.getResultDF()
+    df.to_csv('output_marc')
     print(df)
