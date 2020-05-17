@@ -35,8 +35,8 @@ class MarcExtractor(object):
                 self.df1 = pd.concat([self.df1, self.df2])
 
     def __processConfigFile(self, config_file):
-        marc_file = re.compile(self.tag_marc_file + '\s*\=\s*')
-        filter_columns = re.compile(self.tag_filter_columns + '\s*\=\s*')
+        marc_file = re.compile('^'+self.tag_marc_file + '\s*\=\s*')
+        filter_columns = re.compile('^'+self.tag_filter_columns + '\s*\=\s*')
         with open(config_file, 'r') as configFile:
             for line in configFile.readlines():
                 if re.search(marc_file, line):
@@ -73,6 +73,8 @@ class MarcExtractor(object):
                 self.df2.drop('Topical_Term', axis=1, inplace=True)
             elif column == 'Genre':
                 self.df2[column] = self.df2[column].astype(str).apply(lambda x: self.__clean_genre(x))
+            elif column == 'BibID':
+                self.df2[column] = self.df2[column].apply(str)
             else:
                 raise Exception('ERROR: Unhandled MARC code!')
         pass

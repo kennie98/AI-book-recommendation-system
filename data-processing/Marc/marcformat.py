@@ -1,5 +1,5 @@
 marcColumnDirectory = {
-    "001": "Control Number",
+    "001": "BibID",
     "003": "Control Number Identifier",
     "005": "Data and Time of Latest Transaction",
     "006": "Fixed-Length Data Elements - Additional Material Characteristics",
