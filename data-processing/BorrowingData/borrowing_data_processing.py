@@ -2,7 +2,6 @@ import pandas as pd
 
 df = pd.read_csv('./output_marc.csv', dtype=object)
 df1 = df.dropna(subset=['ISBN', 'Title'])
-df1['BibID'] = df1['BibID'].astype(str)
 df2 = pd.read_csv('./BibUsageWithISBNAvailCopiesByMonth.csv', dtype=object, header=None,
                   names=['BibID', 'ISBN', 'Month', 'Year', 'NumOfAvailItems', 'NumOfCKOs'])
 df2 = df2.sort_values(['Year', 'Month'])
