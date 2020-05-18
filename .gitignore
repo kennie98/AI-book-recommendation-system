@@ -2,3 +2,4 @@
 venv
 ./Marc/hplbib2.csv
 BorrowingHistoryHPL.csv
+./BorrowingData/merged_hpl.csv
