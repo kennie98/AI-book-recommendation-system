@@ -50,10 +50,7 @@ class MarcExtractor(object):
     def __filterColumns(self, df):
         df = df[self.filteredColumns]
         df.columns = [marcformat.marcColumnDirectory[i] for i in self.filteredColumns]
-        #df = df[df['ISBN'].notna()]
-        #df = df[df['Title'].notna()]
         df.dropna(subset=['ISBN', 'Title'], inplace=True)
-        #df = df[df.ISBN.str.contains('[$]a', regex=True)]
         return df
 
     def __processColumns(self):
@@ -185,7 +182,7 @@ class MarcExtractor(object):
 
 
 if __name__ == '__main__':
-    marcExtractor = MarcExtractor('config.ini')
+    marcExtractor = MarcExtractor('../config.ini')
     marcExtractor.processDataSet()
     df = marcExtractor.getResultDF()
     df.to_csv('output_marc.csv', index=False)
