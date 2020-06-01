@@ -22,9 +22,9 @@ class MarcExtractor(object):
         header = pd.DataFrame()
         for chunk in pd.read_csv(self.marcFile, chunksize=self.chunkSize, encoding='latin1'):
             if self.count == 0:
-                header = chunk.columns
-            else:
-                chunk.columns = header
+                # header = chunk.columns
+                header = [i.zfill(3) for i in chunk.columns]
+            chunk.columns = header
             self.count += 1
             print(self.count)
             self.df2 = self.__filterColumns(chunk)
@@ -42,7 +42,7 @@ class MarcExtractor(object):
                 if re.search(marc_file, line):
                     self.marcFile = line.split('=')[-1].strip()
                 elif re.search(filter_columns, line):
-                    self.filteredColumns.extend(line.split('=')[-1].replace(' ', '').split(','))
+                    self.filteredColumns.extend(line.split('=')[-1].strip().replace(' ', '').split(','))
                     self.filteredColumns = [i.zfill(3) for i in self.filteredColumns]
         configFile.close()
         pass
@@ -51,6 +51,7 @@ class MarcExtractor(object):
         df = df[self.filteredColumns]
         df.columns = [marcformat.marcColumnDirectory[i] for i in self.filteredColumns]
         df.dropna(subset=['ISBN', 'Title'], inplace=True)
+        df = df.where(pd.notnull(df), None)
         return df
 
     def __processColumns(self):
@@ -91,8 +92,6 @@ class MarcExtractor(object):
             result = result.replace('a', '')
             if result:
               return result
-        # else:
-        #     return x
 
     def __clean_author(self, x):
         regex1 = r"[$a\s]\w+"
@@ -185,5 +184,5 @@ if __name__ == '__main__':
     marcExtractor = MarcExtractor('../config.ini')
     marcExtractor.processDataSet()
     df = marcExtractor.getResultDF()
-    df.to_csv('output_marc.csv', index=False)
+    df.to_csv('../data/output_marc.csv', index=False)
     print(df)
