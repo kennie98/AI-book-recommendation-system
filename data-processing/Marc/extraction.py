@@ -136,13 +136,13 @@ class MarcExtractor(object):
         regex1 = r"[$a+-]\w+"
         regex2 = r"[$]a\w+"
         if re.search(regex1, x):
-            x = x.replace(' ', '_').replace(',', '_').replace('-', '___').replace('\'', '____')
+            x = x.replace(' ', '_').replace(',', '_').replace('-', '___').replace('\'', '____').replace('\"', '_____')
             match = re.findall(regex1, x)
             match = self.__lst_to_str(match)
             match = re.findall(regex2, match)
             match = self.__lst_to_str(match)
-            match = match.replace('____', '\'').replace('___', '-').replace('__', ',_').replace('_', ' ').replace('$a',
-                                                                                                                  '')
+            match = match.replace('_____', '\"').replace('____', '\'').replace('___', '-').replace('__', ',_').replace(
+                '_', ' ').replace('$a', '').strip()
             return match
         else:
             return x
@@ -150,11 +150,11 @@ class MarcExtractor(object):
     def __clean_summary(self, x):
         regex = r"\ba\w+"
         if re.search(regex, x):
-            x = x.replace(' ', '_').replace(',', '_').replace('-', '___').replace('.', '____').replace('\'', '_____')
+            x = x.replace(' ', '_').replace(',', '_').replace('-', '___').replace('.', '____').replace('\'', '_____').replace('\"', '_____')
             match = re.search(regex, x)
             if match:
                 result = match.group()
-                result = result.replace('a', '', 1).replace('_____', '\'').replace('____', '.').replace('___',
+                result = result.replace('a', '', 1).replace('_____', '\"').replace('_____', '\'').replace('____', '.').replace('___',
                                                                                                         '-').replace(
                     '__', ',_').replace('_', ' ')
                 return result
