@@ -150,11 +150,11 @@ class MarcExtractor(object):
     def __clean_summary(self, x):
         regex = r"\ba\w+"
         if re.search(regex, x):
-            x = x.replace(' ', '_').replace(',', '_').replace('-', '___').replace('.', '____').replace('\'', '_____').replace('\"', '_____')
+            x = x.replace(' ', '_').replace(',', '_').replace('-', '___').replace('.', '____').replace('\'', '_____').replace('\"', '______')
             match = re.search(regex, x)
             if match:
                 result = match.group()
-                result = result.replace('a', '', 1).replace('_____', '\"').replace('_____', '\'').replace('____', '.').replace('___',
+                result = result.replace('a', '', 1).replace('______', '\"').replace('_____', '\'').replace('____', '.').replace('___',
                                                                                                         '-').replace(
                     '__', ',_').replace('_', ' ')
                 return result

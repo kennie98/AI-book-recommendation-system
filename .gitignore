@@ -1,5 +1,5 @@
 .idea
 venv
-./Marc/hplbib2.csv
+./Marc/data
 BorrowingHistoryHPL.csv
 ./BorrowingData/merged_hpl.csv
