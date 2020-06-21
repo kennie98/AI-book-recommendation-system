@@ -11,8 +11,8 @@ class Marc(Document):
     Title = StringField(required=True, max_length=200)
     Summary = StringField(max_length=2000)
     Genre = StringField(max_length=30)
-    TopicalMain = ListField(StringField(max_length=30))
-    TopicalGeographic = ListField(StringField(max_length=30))
+    TopicalMain = ListField(StringField(max_length=80))
+    TopicalGeographic = ListField(StringField(max_length=50))
     meta = {'allow_inheritance': True, 'strict': False}
 
 
@@ -106,8 +106,8 @@ class Mongo:
             Author=rec['Author'] if "Author" in rec else None,
             Summary=rec['Summary'] if "Summary" in rec else None,
             Genre=rec['Genre'] if "Genre" in rec else None,
-            TopicalMain=rec['TopicalMain'] if "TopicalMain" in rec else None,
-            TopicalGeographic=rec['TopicalGeographic'] if "TopicalGeographic" in rec else None,
+            TopicalMain=rec['Topical_Main'] if "Topical_Main" in rec else None,
+            TopicalGeographic=rec['Topical_Geographic'] if "Topical_Geographic" in rec else None,
             Stored=datetime.datetime.now()
         )
 
