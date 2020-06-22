@@ -2,6 +2,7 @@ import datetime
 import pandas as pd
 from mongoengine import *
 import re
+import sys
 
 
 class Marc(Document):
@@ -15,6 +16,11 @@ class Marc(Document):
     TopicalGeographic = ListField(StringField(max_length=50))
     meta = {'allow_inheritance': True, 'strict': False}
 
+    def clean(self):
+        """check if title is empty"""
+        if self.Title == '':
+            msg = 'Draft entries should not have a publication date.'
+            raise ValidationError(msg)
 
 class NewDoc(Marc):
     Stored = DateTimeField(default=datetime.datetime.utcnow)
@@ -42,6 +48,7 @@ class Mongo:
     mongoDBClient = None
     mongoDBDatabase = None
     mongoDBCollection = None
+    errorLog = "./error.log"
 
     def __init__(self, config_file):
         self.__processConfigFile(config_file)
@@ -118,11 +125,18 @@ class Mongo:
 
     def storeToMongoDB(self):
         count = 0
-        for i in self.bookList:
-            count += 1
-            print(count)
-            marcRec = self.__createMarcRecord(i)
-            marcRec.save()
+        with open(self.errorLog, 'w') as ef:
+            for i in self.bookList:
+                count += 1
+                print(count)
+                try:
+                    marcRec = self.__createMarcRecord(i)
+                    marcRec.save()
+                except:
+                    type, value, tb = sys.exc_info()
+                    ef.write("{0}-{1}-{2}-{3}\n".format(count, type, value, tb))
+                    continue
+        ef.close()
 
 
 if __name__ == '__main__':
