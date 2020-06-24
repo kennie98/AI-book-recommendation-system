@@ -10,7 +10,7 @@ class Marc(Document):
     ISBN = StringField(required=True, max_length=13)
     Author = StringField(max_length=50)
     Title = StringField(required=True, max_length=200)
-    Summary = StringField(max_length=2000)
+    Summary = StringField(max_length=3000)
     Genre = StringField(max_length=30)
     TopicalMain = ListField(StringField(max_length=80))
     TopicalGeographic = ListField(StringField(max_length=50))
