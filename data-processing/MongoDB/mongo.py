@@ -14,13 +14,22 @@ class Marc(Document):
     Genre = StringField(max_length=30)
     TopicalMain = ListField(StringField(max_length=80))
     TopicalGeographic = ListField(StringField(max_length=50))
-    meta = {'allow_inheritance': True, 'strict': False}
+    meta = {
+        'allow_inheritance': True,
+        'strict': False,
+        'indexes': [
+            'ISBN',
+            'Genre',
+            'TopicalMain'
+        ]
+    }
 
     def clean(self):
         """check if title is empty"""
         if self.Title == '':
             msg = 'Draft entries should not have a publication date.'
             raise ValidationError(msg)
+
 
 class NewDoc(Marc):
     Stored = DateTimeField(default=datetime.datetime.utcnow)
@@ -92,7 +101,8 @@ class Mongo:
     def processMarcOutputFile(self):
         self.bookList = []
         count = 0
-        for chunk in pd.read_csv(self.outputMarcFile, chunksize=self.chunkSize, encoding='latin1'):
+        for chunk in pd.read_csv(self.outputMarcFile, dtype={'ISBN': object}, chunksize=self.chunkSize,
+                                 encoding='latin1'):
             count += 1
             print(count)
             df = pd.DataFrame(chunk)
