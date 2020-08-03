@@ -1,6 +1,7 @@
 import datetime
 import pandas as pd
 from mongoengine import *
+from pymongo import MongoClient
 import re
 import sys
 
@@ -57,6 +58,7 @@ class Mongo:
     mongoDBClient = None
     mongoDBDatabase = None
     mongoDBCollection = None
+    pyMongoDbClient = None
     errorLog = "./error.log"
 
     def __init__(self, config_file):
@@ -66,6 +68,9 @@ class Mongo:
                                                                          self.mongoDB_Password,
                                                                          self.mongoDB_Database)
         pass
+
+    def getMongoDBConnectionUri(self):
+        return self.mongoDBConnectionUri
 
     def __constructMongoDBConnectionUri(self, uri, username, password, db):
         return uri.replace(self.tag_user, username).replace(self.tag_password, password).replace(self.tag_database, db)
@@ -116,7 +121,7 @@ class Mongo:
                 self.bookList.append(i)
 
     def __createMarcRecord(self, rec):
-        return NewDoc(
+        return Marc(
             BibID=rec['BibID'],
             ISBN=rec['ISBN'],
             Title=rec['Title'],
@@ -125,13 +130,11 @@ class Mongo:
             Genre=rec['Genre'] if "Genre" in rec else None,
             TopicalMain=rec['Topical_Main'] if "Topical_Main" in rec else None,
             TopicalGeographic=rec['Topical_Geographic'] if "Topical_Geographic" in rec else None,
-            Stored=datetime.datetime.now()
         )
 
-    def connectToMongoDB(self):
-        self.mongoDBClient = connect(host=self.mongoDBConnectionUri)
-        self.mongoDBDatabase = self.mongoDBClient[self.mongoDB_Database]
-        self.mongoDBCollection = self.mongoDBDatabase[self.mongoDB_Collection]
+    def pymongoConnectToDB(self):
+        self.pyMongoDbClient = MongoClient(self.mongoDBConnectionUri)
+        return self.pyMongoDbClient
 
     def storeToMongoDB(self):
         count = 0
@@ -148,12 +151,11 @@ class Mongo:
                     continue
         ef.close()
 
-
 if __name__ == '__main__':
-    mongo = Mongo('../config.ini')
-    mongo.processMarcOutputFile()
+        mongo = Mongo('../config.ini')
+        mongo.processMarcOutputFile()
 
-    print("=================== store to MongoDB ===================")
-    mongo.connectToMongoDB()
-    mongo.storeToMongoDB()
-    print("=================== DONE ===================")
+        print("=================== store to MongoDB ===================")
+        mongo.connectToMongoDB()
+        mongo.storeToMongoDB()
+        print("=================== DONE ===================")
