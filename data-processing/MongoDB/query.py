@@ -1,4 +1,8 @@
 import mongo as Mongo
+from datetime import datetime
+import pymongo
+import json
+import ast
 
 
 class MarcQuery:
@@ -12,6 +16,11 @@ class MarcQuery:
         self.client = self.mongo.pymongoConnectToDB()
         self.db = self.client['hpl_db']
         self.marc = self.db['marc']
+        # self.marc.create_index([("ISBN", pymongo.ASCENDING)], unique=True)
+        # self.marc.create_index([("Title", pymongo.ASCENDING)], unique=True)
+        # self.marc.create_index([("Genre", pymongo.ASCENDING)], unique=True)
+        # self.marc.create_index([("TopicalMain", pymongo.ASCENDING)], unique=True)
+        # self.marc.create_index([("TopicalGeographic", pymongo.ASCENDING)], unique=True)
 
     def getGenreRecords(self, genre):
         return list(self.marc.find({'Genre': genre}))
@@ -22,21 +31,86 @@ class MarcQuery:
     def getTopicalGeographicRecords(self, topic):
         return list(self.marc.find({'TopicalGeographic': topic}))
 
+    def getIsbnRecords(self, isbn):
+        return list(self.marc.find({'ISBN': isbn}))
+
     def getAllBookTitles(self):
         return list(self.marc.find({}, {'Title': 1, '_id': 0}))
 
+    def getBooksWithGenreList(self, genreList):
+        titleList = []
+        for g in genreList:
+            titleList.extend(self.getGenreRecords(g))
+        return titleList
+
+    def getBooksWithTopicalMainList(self, topicalList):
+        return list(self.marc.find({'TopicalMain': {'$in': topicalList}}))
+        # titleList = []
+        # for g in topicalList:
+        #     titleList.extend(self.getTopicalMainRecords(g))
+        # return titleList
+
+    def getBooksWithTopicalGeographicList(self, topicalList):
+        titleList = []
+        for g in topicalList:
+            titleList.extend(self.getTopicalGeographicRecords(g))
+        return titleList
+
+    def getBookRecordsFromIsbnList(self, isbnList):
+        recordList = []
+        for b in isbnList:
+            recordList.extend(self.getIsbnRecords(b))
+        return recordList
+
+    def getBookRecordsFromGenreAndTopic(self, gList, tmList, tgList):
+        return list(self.marc.aggregate([
+            {"$match": {
+                "$or": [
+                    {'Genre': {'$in': gList}},
+                    {'TopicalMain': {'$in': tmList}},
+                    {'TopicalGeographic': {'$in': tgList}}
+                ]
+            }},
+            {"$project": {
+                'ISBN': 1,
+                'Title': 1,
+                'Author': 1,
+            }}
+        ]))
+
+    @staticmethod
+    def getListFromRecords(recordList, key):
+        valueList = []
+        valueList.extend(b[key] for b in recordList)
+        valueList = list(set(valueList))
+        return valueList
+
+    @staticmethod
+    def getListFromRecordLists(recordList, key):
+        valueList = []
+        for b in recordList:
+            valueList.extend(b[key])
+        valueList = list(set(valueList))
+        return valueList
+
+    @staticmethod
+    def getLowerCaseTitlesFromBookRecords(recordList):
+        return json.dumps([b['Title'].lower() for b in recordList])
+
+    @staticmethod
+    def stringListToString(stringList):
+        return json.dumps(stringList)
+
+    @staticmethod
+    def stringToStringList(s):
+        return ast.literal_eval(s)
+
+
 # get all the book titles and save to file
-def getBookTitles(ofile):
+def getAllBookTitles(marcQueryObj, ofile):
     import codecs
 
-    marcQuery = MarcQuery()
-    # readers = marcQuery.getGenreRecords('Readers')
-    # print(readers)
-    # phtographs = marcQuery.getTopicalMainRecords('Photographs')
-    # print(phtographs)
-    # canada = marcQuery.getTopicalGeographicRecords('Canada')
-    # print(canada)
-    books = marcQuery.getAllBookTitles()
+    books = marcQueryObj.getAllBookTitles()
 
     bookTitleSet = set()
 
@@ -44,16 +118,53 @@ def getBookTitles(ofile):
         for book in books:
             bookTitleSet.add(book['Title'].lower())
         for book in bookTitleSet:
-            Of.write(book+'\n')
+            Of.write(book + '\n')
         Of.close()
-    return
+
+
+def getBookTitleStringFromAllRecords(bookRecords):
+
+    bookTitles = set()
+    for book in bookRecords:
+        bookTitles.add(book['Title'].lower())
+    bookTitles = list(bookTitles)
+
+    # import codecs
+    # bookTitleString = json.dumps(bookTitles)
+    # with codecs.open("test.txt", "w", "utf-8") as Of:
+    #     Of.write(bookTitleString)
+    # Of.close()
+    return json.dumps(bookTitles)
+
 
 if __name__ == '__main__':
+    isbnString = "['9780310714675', '9780763630614', '9781416925330', '9780310714569', '9780152062668', '9781553378907', '9781416915409', '9780142407752', '9780142408094', '9780310714545', '9780310714576', '9781250034366','9780545862615']"
+
+    print("start: Time =", datetime.now().strftime("%H:%M:%S"))
+
+    marcQuery = MarcQuery()
+    isbnList = marcQuery.stringToStringList(isbnString)
+    recordList = marcQuery.getBookRecordsFromIsbnList(isbnList)
+
+    genreList = marcQuery.getListFromRecords(recordList, "Genre")
+    topicalMainList = marcQuery.getListFromRecordLists(recordList, "TopicalMain")
+    topicalGeographicList = marcQuery.getListFromRecordLists(recordList, "TopicalGeographic")
+
+    print("Before book record query: Time =", datetime.now().strftime("%H:%M:%S"))
+
+    bookList = marcQuery.getBookRecordsFromGenreAndTopic(genreList, topicalMainList, topicalGeographicList)
+
+    print("After book record query: Time =", datetime.now().strftime("%H:%M:%S"))
+
+    bookListString = getBookTitleStringFromAllRecords(bookList)
+
+    # print(bookListString)
+    del marcQuery
+
     # readers = marcQuery.getGenreRecords('Readers')
     # print(readers)
     # phtographs = marcQuery.getTopicalMainRecords('Photographs')
     # print(phtographs)
     # canada = marcQuery.getTopicalGeographicRecords('Canada')
     # print(canada)
-    getBookTitles("titleSet.txt")
-
+    # getAllBookTitles("titleSet.txt")
