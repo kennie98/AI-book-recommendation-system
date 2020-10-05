@@ -1,6 +1,8 @@
 import mongo as Mongo
 from datetime import datetime
 import pymongo
+import sys
+import zlib, lzma, bz2
 import json
 import ast
 
@@ -123,17 +125,33 @@ def getAllBookTitles(marcQueryObj, ofile):
 
 
 def getBookTitleStringFromAllRecords(bookRecords):
-
     bookTitles = set()
     for book in bookRecords:
         bookTitles.add(book['Title'].lower())
     bookTitles = list(bookTitles)
 
-    # import codecs
+    bookTitleString = json.dumps(bookTitles).encode("utf-8")
+    # print("before compression: Time =", datetime.now().strftime("%H:%M:%S"))
+    # zip_zlib = zlib.compress(bookTitleString)
+    # print("zlib finished: Time =", datetime.now().strftime("%H:%M:%S"))
+    zip_bz2 = bz2.compress(bookTitleString)
+    # print("bz2 finished: Time =", datetime.now().strftime("%H:%M:%S"))
+    # zip_lmza = lzma.compress(bookTitleString)
+    # print("lmza finished: Time =", datetime.now().strftime("%H:%M:%S"))
+
+    # print('Original data size: ', sys.getsizeof(bookTitleString))
+    # print('zlib data size: ', sys.getsizeof(zip_zlib))
+    # print('bz2 data size: ', sys.getsizeof(zip_bz2))
+    # print('lmza data size: ', sys.getsizeof(zip_lmza))
+
+    # with py7zr.SevenZipFile('titles.7z', 'w') as archive:
+    #     archive.writeall('/path/to/base_dir', 'base')
+
+    import codecs
     # bookTitleString = json.dumps(bookTitles)
-    # with codecs.open("test.txt", "w", "utf-8") as Of:
-    #     Of.write(bookTitleString)
-    # Of.close()
+    with codecs.open("test.bz2", "wb") as Of:
+        Of.write(zip_bz2)
+    Of.close()
     return json.dumps(bookTitles)
 
 

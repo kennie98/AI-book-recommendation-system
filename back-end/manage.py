@@ -2,11 +2,14 @@ import os
 import requests
 from flask import Flask, request, render_template
 from flask_restful import Resource, Api
+import bz2
 
 app = Flask(__name__)
 # app.config.from_object(os.environ['APP_SETTINGS'])
 # app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 api = Api(app)
+
+state = "IDLE"
 
 
 @app.route('/', methods=['GET', 'POST'])
@@ -16,9 +19,13 @@ def index():
     if request.method == "POST":
         # get url that the user has entered
         try:
-            url = request.form['url']
-            r = requests.get(url)
-            print(r.text)
+            # url = request.form['url']
+            # r = requests.get(url)
+            # print(r.text)
+            bz2_data = request.data
+            bookTitles = bz2.decompress(bz2_data)
+            print("file received")
+            print(bookTitles)
         except:
             errors.append(
                 "Unable to get URL. Please make sure it's valid and try again."

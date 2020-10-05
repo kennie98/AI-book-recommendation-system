@@ -35,6 +35,14 @@ class SimilarityRanking(object):
         proc.terminate()
         # print("***Process terminated***")
 
+    def filterBookTitleRanking(self, list):
+        dictList = []
+        for l in list:
+            match = re.match(self.TITLE_RE_PATTERN, l)
+            if match is not None:
+                dictList.append(match.groupdict())
+        return json.dumps(dictList)
+
     def printList(self, list):
         dictList = []
         for l in list:
