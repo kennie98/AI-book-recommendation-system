@@ -1,0 +1,6 @@
+version: '3.7'
+services:
+  ai-recommender-server:
+    build: .
+    ports:
+      - "5000:5000"
