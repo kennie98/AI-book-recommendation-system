@@ -2,6 +2,7 @@ import time
 from flask import Flask, request, jsonify
 import bz2
 import ast
+import sys
 from similarity_ranking import SimilarityRanking
 import global_data
 
@@ -10,12 +11,15 @@ app = Flask(__name__)
 global_data.state = "IDLE"
 global_data.proc = None
 
+def log(str):
+    print(str, file=sys.stderr)
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
     errors = []
     results = {}
     if request.method == "POST":
+        log(global_data.state)
         if global_data.state == "IDLE":
             try:
                 # decompress data and write to file
@@ -61,6 +65,14 @@ def index():
                 errors.append(
                     "Error Occur"
                 )
+                print(errors)
+
+    elif request.method == "GET":
+        return jsonify(
+            {
+                'message': 'AI recommendation system for HPL',
+                'state': global_data.state
+            })
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(host='0.0.0.0', port=3518, debug=True)

@@ -1,6 +1,8 @@
-version: '3.7'
+version: '2.4'
 services:
   ai-recommender-server:
     build: .
     ports:
-      - "5000:5000"
+      - "3518:3518"
+    cpus: '0.50'
+    mem_limit: 5g
