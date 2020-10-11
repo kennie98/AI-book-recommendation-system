@@ -1,8 +1,9 @@
-import time
 from flask import Flask, request, jsonify
+import time
 import bz2
 import ast
 import sys
+import json
 from similarity_ranking import SimilarityRanking
 import global_data
 
@@ -11,17 +12,17 @@ app = Flask(__name__)
 global_data.state = "IDLE"
 global_data.proc = None
 
+
 def log(str):
     print(str, file=sys.stderr)
+
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
     errors = []
-    results = {}
     if request.method == "POST":
-        log(global_data.state)
-        if global_data.state == "IDLE":
-            try:
+        try:
+            if global_data.state == "IDLE":
                 # decompress data and write to file
                 bz2_data = request.data
                 bookTitles = bz2.decompress(bz2_data)
@@ -39,19 +40,14 @@ def index():
                 time.sleep(15)
                 global_data.state = "READY"
                 return jsonify({'status': 'finish loading model'})
-            except:
-                errors.append(
-                    "Error Occur"
-                )
-            return jsonify({'status': 'book titles received'})
-        elif global_data.state == "READY":
-            try:
-                req = request.get_json()
+
+            elif global_data.state == "READY":
+                req = json.loads(request.data.decode(encoding='UTF-8'))
                 if "search-text" in req:
                     searchText = req["search-text"]
                     lines = global_data.similarityRanker.similarityRanking(global_data.proc, searchText)
-                    json = global_data.similarityRanker.filterBookTitleRanking(lines)
-                    return jsonify(json)
+                    js = global_data.similarityRanker.filterBookTitleRanking(lines)
+                    return jsonify(js)
                 elif "command" in req:
                     cmd = req["command"]
                     if cmd == "EXIT":
@@ -61,11 +57,15 @@ def index():
                         global_data.state = "IDLE"
                         return jsonify({'status': 'finish search session'})
                     return jsonify({'message': '?'})
-            except:
-                errors.append(
-                    "Error Occur"
-                )
-                print(errors)
+        except:
+            errors.append(
+                {
+                    "state": global_data.state,
+                    "error": "unknown Error",
+                    "request": "POST"
+                }
+            )
+            print(errors)
 
     elif request.method == "GET":
         return jsonify(
@@ -73,6 +73,7 @@ def index():
                 'message': 'AI recommendation system for HPL',
                 'state': global_data.state
             })
+
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=3518, debug=True)
