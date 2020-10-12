@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: env-config
+  namespace: hpl
+data:
+  AI_SERVER_ADDRESS: http://ai-recommender-service:3518
+  SERVICE_MANAGER_ADDRESS: http://manager-service:2354
+

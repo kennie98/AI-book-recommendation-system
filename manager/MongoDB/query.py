@@ -84,7 +84,7 @@ class MarcQuery:
 
         bookList = self.getBookRecordsFromGenreAndTopic(genreList, topicalMainList, topicalGeographicList)
 
-        print("After book record query: Time =", datetime.now().strftime("%H:%M:%S"))
+        log("after book record query: Time ="+datetime.now().strftime("%H:%M:%S"))
 
         zippedBookListString = self.getZippedBookTitleStringFromAllRecords(bookList)
 

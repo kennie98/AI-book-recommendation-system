@@ -1,0 +1,45 @@
+---
+  apiVersion: apps/v1
+  kind: Deployment
+  metadata:
+    name: service-manager-deployment
+    namespace: hpl
+    labels:
+      app: service-manager
+  spec:
+    replicas: 1
+    selector:
+      matchLabels:
+        app: service-manager
+    template:
+      metadata:
+        labels:
+          app: service-manager
+      spec:
+        containers:
+        - name: service-manager
+          image: manager_service-manager
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 2354
+          command: ["python", "server.py"]
+          env:
+            - name: AI_SERVER_ADDRESS
+              valueFrom:
+                configMapKeyRef:
+                  name: env-config
+                  key: AI_SERVER_ADDRESS
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: manager-service
+  namespace: hpl
+spec:
+  selector:
+    app: service-manager
+  ports:
+    - protocol: TCP
+      port: 2354
+      targetPort: 2354
+

@@ -1,0 +1,40 @@
+---
+  apiVersion: apps/v1
+  kind: Deployment
+  metadata:
+    name: ai-recommender-deployment
+    namespace: hpl
+    labels:
+      app: ai-recommender
+  spec:
+    replicas: 1
+    selector:
+      matchLabels:
+        app: ai-recommender
+    template:
+      metadata:
+        labels:
+          app: ai-recommender
+      spec:
+        containers:
+        - name: ai-recommender
+          image: recommender_ai-recommender-server
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 3518
+          command: ["python", "server.py"]
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ai-recommender-service
+  namespace: hpl
+spec:
+  selector:
+    app: ai-recommender
+  ports:
+    - protocol: TCP
+      port: 3518
+      targetPort: 3518
+

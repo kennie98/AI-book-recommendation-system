@@ -4,6 +4,7 @@ import bz2
 import ast
 import sys
 import json
+from datetime import datetime
 from similarity_ranking import SimilarityRanking
 import global_data
 
@@ -23,6 +24,7 @@ def index():
     if request.method == "POST":
         try:
             if global_data.state == "IDLE":
+                log("received book title list string: Time = " + datetime.now().strftime("%H:%M:%S"))
                 # decompress data and write to file
                 bz2_data = request.data
                 bookTitles = bz2.decompress(bz2_data)
@@ -32,12 +34,15 @@ def index():
                         Of.write(book + '\n')
                 Of.close()
 
+                log("start to load AI recommender model: Time = " + datetime.now().strftime("%H:%M:%S"))
+
                 # load model
                 global_data.similarityRanker = SimilarityRanking()
                 global_data.proc = global_data.similarityRanker.loadModel('model.bin', 'book_titles.txt', '30')
 
                 # add 15 seconds delay for the model to be loaded
                 time.sleep(15)
+                log("finished loading AI recommender model: Time = " + datetime.now().strftime("%H:%M:%S"))
                 global_data.state = "READY"
                 return jsonify({'status': 'finish loading model'})
 

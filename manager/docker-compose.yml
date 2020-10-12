@@ -1,0 +1,6 @@
+version: '3'
+services:
+  service-manager:
+    build: .
+    ports:
+      - "2354:2354"
