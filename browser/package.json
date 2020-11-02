@@ -8,35 +8,59 @@
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
+    "bootstrap": "^4.5.3",
+    "bootstrap-vue": "^2.18.1",
     "core-js": "^3.6.5",
-    "vue": "^2.6.11"
+    "vue": "^2.6.11",
+    "vue-router": "^3.2.0",
+    "vuex": "^3.4.0"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "~4.5.0",
     "@vue/cli-plugin-eslint": "~4.5.0",
+    "@vue/cli-plugin-router": "~4.5.0",
+    "@vue/cli-plugin-vuex": "~4.5.0",
     "@vue/cli-service": "~4.5.0",
+    "@vue/eslint-config-airbnb": "^5.0.2",
     "babel-eslint": "^10.1.0",
     "eslint": "^6.7.2",
+    "eslint-config-airbnb-base": "^14.2.0",
+    "eslint-config-standard": "^14.1.1",
+    "eslint-import-resolver-node": "^0.3.4",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-promise": "^4.2.1",
+    "eslint-plugin-standard": "^4.0.1",
+    "eslint-plugin-import": "^2.20.2",
     "eslint-plugin-vue": "^6.2.2",
+    "node-sass": "^4.12.0",
+    "sass-loader": "^8.0.2",
     "vue-template-compiler": "^2.6.11"
   },
   "eslintConfig": {
-    "root": true,
-    "env": {
-      "node": true
-    },
     "extends": [
-      "plugin:vue/essential",
-      "eslint:recommended"
+      "airbnb-base"
     ],
     "parserOptions": {
-      "parser": "babel-eslint"
+      "ecmaVersion": 2018
     },
-    "rules": {}
-  },
-  "browserslist": [
-    "> 1%",
-    "last 2 versions",
-    "not dead"
-  ]
+    "rules": {
+      "max-len": "off",
+      "no-underscore-dangle": "off",
+      "eqeqeq": "warn",
+      "no-restricted-syntax": [
+        "off",
+        "BinaryExpression[operator='in']"
+      ],
+      "no-prototype-builtins": "off",
+      "prefer-destructuring": "off",
+      "no-param-reassign": "warn",
+      "no-await-in-loop": "warn",
+      "global-require": "warn",
+      "prefer-rest-params": "warn",
+      "no-plusplus": "warn",
+      "no-use-before-define": "warn",
+      "new-cap": "warn",
+      "no-console": "off"
+    }
+  }
 }

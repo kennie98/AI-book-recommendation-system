@@ -1,0 +1,106 @@
+const userData = [
+  {
+    name: 'Jane Roe',
+    borrowingHistory:
+          [
+            {
+              ISBN: '1415764409',
+              title: 'Bubble Guppies',
+              author: '',
+              summary: 'From the first time he meets the Bubble Guppies to finding his favorite Bubble Bite snacks to a double-length fairy tale, get to know the Guppies"playful pet, Bubble Puppy',
+              genre: 'Fantasy',
+              topical_main: 'Dogs,Guppies,Drama,Magic',
+              topical_geographical: '',
+            },
+            {
+              ISBN: '1415700583',
+              title: "Chappelle's show",
+              author: '',
+              summary: 'All 12 uncensored and unblurred episodes with commentary on 5 from creators David Chappelle and Neal Brennan.',
+              genre: 'Comedy',
+              topical_main: 'African American comedians,African American wit and humor,American wit and humor',
+              topical_geographical: '',
+            },
+            {
+              ISBN: '078069130X',
+              title: 'Chuck',
+              author: '',
+              summary: "Chuck is back with new missions, a new business, and no Intersect'The stakes are high as Chuck sets out to become a full-fledged spy'But without the CIA as backup, Chuck will have to rely now more than ever on John Casey, Sarah Walker, and a new Intersect, Morgan Guillermo Grimes'Across this thrilling final season, Chuck will find that his wits, his friends, and his family are the only backup he needs.",
+              genre: 'Spy',
+              topical_main: 'Geeks,Spies,Espionage,Attempted murder,Drama,Official secrets,Man',
+              topical_geographical: 'United States',
+            },
+            {
+              ISBN: '9781603997393',
+              title: 'Conan the adventurer',
+              author: '',
+              summary: "Follow Conan and his friends on their quest to rescue Conan's family from an evil spell cast by the Serpent Man wizard Wrath-Amon'Along the way, Conan helps out a mysterious city led by an evil ruler, falls under an evil spell, and learns how to read",
+              genre: 'Fantasy',
+              topical_main: 'Magic,Drama,Blessing and cursing',
+              topical_geographical: '',
+            },
+            {
+              ISBN: '1565809297',
+              title: 'Delta',
+              author: '',
+              summary: "Mihail returns to his mother's village after years of absence to discover he has a grown half sister, Fauna'Mihail has ambitions to rebuild his father's house and support himself through fishing'When he moves to an island that once belonged to his family, Fauna tags along, eager to escape her brutish father'What should be an idyllic existence is disrupted by the small minds of petty villagers.",
+              genre: 'Feature',
+              topical_main: 'Dysfunctional families,Drama,Brothers and sisters,Feature films',
+              topical_geographical: 'Hungary',
+            },
+          ],
+  },
+  {
+    name: 'John Doe',
+    borrowingHistory:
+          [
+            {
+              ISBN: '9781481459297',
+              title: 'Boy robot',
+              author: 'Curtis Simon',
+              summary: 'Seventeen-year-old Isaak learns of his nefarious techno-genetic origins, and the underground force that has come together to fight against the secret government organization formed to eradicate those like him',
+              genre: 'Science',
+              topical_main: 'Robots,Fiction,Survival,Young adult fiction',
+              topical_geographical: '',
+            },
+            {
+              ISBN: '9781772850000',
+              title: 'Super agent Jon Le Bon',
+              author: 'A Alex',
+              summary: '',
+              genre: 'Action',
+              topical_main: 'Moose,Comic books,Animals',
+              topical_geographical: '',
+            },
+            {
+              ISBN: '9781101932148',
+              title: 'Bound by blood and sand',
+              author: 'Allen Becky',
+              summary: "A slave living in a dying desert world must decide if she wants to help the kingdom's prince save their world.",
+              genre: 'Fantasy',
+              topical_main: 'Slavery,Blessing and cursing,Magic,Fiction,Young adult fiction',
+              topical_geographical: '',
+            },
+            {
+              ISBN: '9780316355698',
+              title: 'Forsaken skies',
+              author: 'Clark D Nolan',
+              summary: "Commander Lanoe is one of the Navy's greatest heroes, but the civil war left him with nothing but painful memories'When a planetary governor is murdered, it falls to Lanoe to hunt down the killer and bring them to justice'Yet his pursuit will lead him towards the greatest threat mankind has ever faced'An unknown armada has emerged from the depths of space, targeting an isolated colony planet'As the colonists plead for help, the politicians and bureaucrats look away'But Lanoe has never run from a fight'and he will not abandon thousands of innocents to their fate.",
+              genre: 'Science',
+              topical_main: 'Outer space,Fiction,War stories',
+              topical_geographical: '',
+            },
+            {
+              ISBN: '9781481443517',
+              title: 'The last adventure of Constance Verity',
+              author: 'Martinez A Lee',
+              summary: "Granted a wish at birth, Constance Verity has become one of the world's great adventurers'A master of exotic martial arts and a keen detective, she is in possession of a collection of strange artifacts, which are mostly kept in unlabeled boxes in her apartment'Constance has spent the past twenty years saving the world, and she's sick of it'She wants an office job and a boyfriend who isn't going to get killed by who knows what, and she's figured out the way to get them",
+              genre: 'Action',
+              topical_main: 'Women heroes,Fiction,Fairy godmothers,Fate and fatalism,Humorous stories',
+              topical_geographical: '',
+            },
+          ],
+  },
+];
+
+export { userData as default };
