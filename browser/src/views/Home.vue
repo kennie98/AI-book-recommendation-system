@@ -9,8 +9,12 @@
       </div>
     </b-container>
     <div class="mb-3">
-      <b-button v-b-toggle.user-selection-sidebar class="mr-1">Select User</b-button>
-      <b-button v-b-toggle.user-borrowing-history class="mr-1">Borrowing History</b-button>
+      <b-button :disabled='isDisableUserSelection' v-b-toggle.user-selection-sidebar class="mr-1">
+        Select User
+      </b-button>
+      <b-button v-b-toggle.user-borrowing-history class="mr-1">
+        Borrowing History
+      </b-button>
     </div>
 
     <b-container>
@@ -26,8 +30,11 @@
     <b-sidebar id="user-selection-sidebar" title="Select a Library User" shadow>
       <div class="px-3 py-2">
         <div>
-          <b-form-select v-model="userName" :options="nameList" class="mb-3"
-          @change="setUser($event)">
+          <b-form-select v-model="userName"
+                        class="mb-3"
+                        :options="nameList"
+                        :disabled='isDisableUserSelection'
+                        @change="setUser($event)">
             <template #first>
               <b-form-select-option :value="null" disabled>
                 -- Please select a user --
@@ -72,6 +79,7 @@ export default {
       userName: null,
       userId: null,
       searchText: '',
+      searchState: 'IDLE',
     };
   },
   computed: {
@@ -94,6 +102,9 @@ export default {
         this.addNonEmptyStringToArray(cat, book.topical_geographical);
       }
       return [...new Set(cat)].join(', ');
+    },
+    isDisableUserSelection() {
+      return this.searchState !== 'IDLE';
     },
   },
   methods: {
