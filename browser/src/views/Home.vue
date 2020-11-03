@@ -15,6 +15,9 @@
       <b-button v-b-toggle.user-borrowing-history class="mr-1">
         Borrowing History
       </b-button>
+      <b-button @click="loadUserProfile()" :disabled='isDisableUserProfileLoad' class="mr-1">
+        Load User Profile
+      </b-button>
     </div>
 
     <b-container>
@@ -71,6 +74,7 @@
 
 <script>
 import userData from '@/data/user_data';
+import ServiceManager from '@/service_manager/service_manager';
 
 export default {
   name: 'Home',
@@ -80,6 +84,7 @@ export default {
       userId: null,
       searchText: '',
       searchState: 'IDLE',
+      serviceManager: null,
     };
   },
   computed: {
@@ -106,6 +111,9 @@ export default {
     isDisableUserSelection() {
       return this.searchState !== 'IDLE';
     },
+    isDisableUserProfileLoad() {
+      return this.userName === null;
+    },
   },
   methods: {
     addNonEmptyStringToArray(a, s) {
@@ -118,6 +126,12 @@ export default {
     },
     searchBookTitle(searchText) {
       console.log(`search: ${searchText}`);
+    },
+    async loadUserProfile() {
+      this.serviceManager = new ServiceManager();
+      await this.serviceManager.getServerState();
+      this.searchState = this.serviceManager.state;
+      console.log(`Home - loadUserProfile = ${this.serviceManager.state}`);
     },
   },
 };

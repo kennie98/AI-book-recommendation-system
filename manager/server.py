@@ -13,6 +13,12 @@ CFG_INI = "./config.ini"
 def log(str):
     print(str, file=sys.stderr)
 
+# avoid CORS problem: https://stackoverflow.com/questions/26980713/solve-cross-origin-resource-sharing-with-flask
+def enableCORS(js):
+    response = jsonify(js)
+    response.headers.add('Access-Control-Allow-Origin', '*')
+    log("CORS enabled")
+    return response
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
@@ -34,7 +40,7 @@ def index():
                 log("get back the response from AI server: Time ="+datetime.now().strftime("%H:%M:%S"))
                 if r.ok == True:
                     global_data.state = "READY"
-                    return jsonify(json.loads(r.text))
+                    return enableCORS(json.loads(r.text))
 
             elif global_data.state == "READY":
                 r = requests.post(url=os.environ['AI_SERVER_ADDRESS'],
@@ -46,7 +52,7 @@ def index():
                         status = json.loads(r.text).get("status")
                         if status == "finish search session":
                             global_data.state = "IDLE"
-                    return jsonify(json.loads(r.text))
+                    return enableCORS(json.loads(r.text))
         except:
             errors.append(
                 {
@@ -57,7 +63,7 @@ def index():
             )
 
     elif request.method == "GET":
-        return jsonify(
+        return enableCORS(
             {
                 'message': 'Manager status',
                 'state': global_data.state

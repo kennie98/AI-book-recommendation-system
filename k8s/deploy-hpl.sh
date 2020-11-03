@@ -3,27 +3,33 @@
 PRJ_DIR=$HOME/dev/AI_Book_Recommendation_System/
 source ./helper.sh
 
+echo ""
+print_info "> Rebuild all docker images"
+echo ""
+#. $PRJ_DIR/recommender/local-build.sh --build
+cd $PRJ_DIR/manager
+docker build ./
 
 echo ""
 echo ""
 print_header "-- deploy on Minikube --"
 echo ""
 echo ""
-#if ! command -v minikube version &> /dev/null
-#then
-#  echo "Minikube not installed, start to install"
-#  curl -LO https://github.com/kubernetes/minikube/releases/download/v1.12.2/minikube_latest_amd64.deb
-#  sudo dpkg -i minikube_latest_amd64.deb
-#  # need conntrack & socat
-#else
-#  print_info "> restart Minikube"
-#  echo ""
-#  minikube stop
-#  minikube delete
-#fi
+if ! command -v minikube version &> /dev/null
+then
+  echo "Minikube not installed, start to install"
+  curl -LO https://github.com/kubernetes/minikube/releases/download/v1.12.2/minikube_latest_amd64.deb
+  sudo dpkg -i minikube_latest_amd64.deb
+  # need conntrack & socat
+else
+  print_info "> restart Minikube"
+  echo ""
+  minikube stop
+  minikube delete
+fi
 
 sudo sysctl fs.protected_regular=0
-sudo minikube start --driver=none --addons ingress
+sudo minikube start --driver=none
 sudo mv /home/$USER/.kube /home/$USER/.minikube $HOME
 sudo chown -R $USER /home/$USER/.kube /home/$USER/.minikube
 
