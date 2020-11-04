@@ -4,7 +4,10 @@
     <b-container class="user-name-header">
       <div>
         <b-card border-variant="light" :header="cardHeaderUserName" align="center">
-          <b-card-text><b>Genres, Categories and Topics:</b> {{interestedCategories}}</b-card-text>
+          <b-card-text v-if='isDisplayUserInfo'>
+            <b>Genres, Categories and Topics:</b>
+            {{interestedCategories}}
+          </b-card-text>
         </b-card>
       </div>
     </b-container>
@@ -12,11 +15,11 @@
       <b-button :disabled='isDisableUserSelection' v-b-toggle.user-selection-sidebar class="mr-1">
         Select User
       </b-button>
-      <b-button v-b-toggle.user-borrowing-history class="mr-1">
+      <b-button :disabled='isDisableUserInfo' v-b-toggle.user-borrowing-history class="mr-1">
         Borrowing History
       </b-button>
-      <b-button @click="loadUserProfile()" :disabled='isDisableUserProfileLoad' class="mr-1">
-        Load User Profile
+      <b-button @click="userkeyFuntion()" :disabled='isDisableUserkeyFunction' class="mr-1">
+        {{userkey}}
       </b-button>
     </div>
 
@@ -60,9 +63,13 @@
             <b-form-input v-model="searchText"
                           type="search"
                           placeholder="Search Book Titles"
+                          :disabled='isDisableSearch'
                           class="mr-1">
             </b-form-input>
-            <b-button @click="searchBookTitle(searchText)">Search</b-button>
+            <b-button @click="searchBookTitle(searchText)"
+                      :disabled='isDisableSearch'>
+                      Search
+            </b-button>
           </b-input-group>
         </b-col>
         <b-col>
@@ -85,6 +92,7 @@ export default {
       searchText: '',
       searchState: 'IDLE',
       serviceManager: null,
+      userkeyText: 'Load User Profile',
     };
   },
   computed: {
@@ -111,8 +119,19 @@ export default {
     isDisableUserSelection() {
       return this.searchState !== 'IDLE';
     },
-    isDisableUserProfileLoad() {
-      return this.userName === null;
+    isDisplayUserInfo() {
+      return this.userName !== null;
+    },
+    isDisableUserkeyFunction() {
+      return (this.searchState === 'PENDING' || this.userName == null);
+    },
+    isDisableSearch() {
+      return this.searchState !== 'READY';
+    },
+    userkey() {
+      // eslint-disable-next-line no-nested-ternary
+      return (this.searchState === 'READY') ? 'End Session'
+        : (this.searchState === 'IDLE') ? 'Load User Profile' : '...';
     },
   },
   methods: {
@@ -124,14 +143,40 @@ export default {
     setUser(event) {
       this.userId = this.nameList.indexOf(event);
     },
+    getIsbnString() {
+      return JSON.stringify(this.borrowingHistroy.map((a) => a.ISBN));
+    },
     searchBookTitle(searchText) {
       console.log(`search: ${searchText}`);
     },
-    async loadUserProfile() {
+    async userkeyFuntion() {
       this.serviceManager = new ServiceManager();
       await this.serviceManager.getServerState();
       this.searchState = this.serviceManager.state;
-      console.log(`Home - loadUserProfile = ${this.serviceManager.state}`);
+      console.log(`searchState = ${this.searchState}`);
+
+      switch (this.searchState) {
+        case 'IDLE':
+          {
+            this.searchState = 'PENDING';
+            const success = await this.serviceManager.sendStartRequest(this.getIsbnString());
+            console.log(`Home - IDLE: start session response ${success}`);
+            this.searchState = success ? 'READY' : 'IDLE';
+          }
+          break;
+
+        case 'READY':
+          {
+            this.searchState = 'PENDING';
+            const success = await this.serviceManager.sendEndRequest();
+            console.log(`Home - READY: end session response ${success}`);
+            this.searchState = success ? 'IDLE' : 'READY';
+          }
+          break;
+
+        default:
+          break;
+      }
     },
   },
 };

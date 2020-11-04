@@ -14,8 +14,16 @@ export default class APIService {
     return response.data;
   }
 
-  async post(params) {
-    const response = await axios.post(this.API_URL, params);
+  async postPlainText(data) {
+    console.log(`ApiService: post() - data: ${data}`);
+    const response = await axios.post(this.API_URL,
+      data,
+      {
+        headers: {
+          'Content-Type': 'text/plain',
+          Accept: '*/*',
+        },
+      });
     return response.data;
   }
 }

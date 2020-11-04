@@ -8,7 +8,7 @@ print_info "> Rebuild all docker images"
 echo ""
 #. $PRJ_DIR/recommender/local-build.sh --build
 cd $PRJ_DIR/manager
-docker build ./
+docker build ./ -t manager_service-manager:latest
 
 echo ""
 echo ""
@@ -18,7 +18,7 @@ echo ""
 if ! command -v minikube version &> /dev/null
 then
   echo "Minikube not installed, start to install"
-  curl -LO https://github.com/kubernetes/minikube/releases/download/v1.12.2/minikube_latest_amd64.deb
+  curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube_latest_amd64.deb
   sudo dpkg -i minikube_latest_amd64.deb
   # need conntrack & socat
 else
