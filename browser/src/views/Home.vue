@@ -15,11 +15,19 @@
       <b-button :disabled='isDisableUserSelection' v-b-toggle.user-selection-sidebar class="mr-1">
         Select User
       </b-button>
-      <b-button :disabled='isDisableUserInfo' v-b-toggle.user-borrowing-history class="mr-1">
+      <b-button :disabled='!isDisplayUserInfo' v-b-toggle.user-borrowing-history class="mr-1">
         Borrowing History
       </b-button>
-      <b-button @click="userkeyFuntion()" :disabled='isDisableUserkeyFunction' class="mr-1">
-        {{userkey}}
+      <b-button @click="userkeyFuntion()"
+                :disabled='isDisableUserkeyFunction'
+                class="mr-1">
+        <div v-if="isLoading">
+          <b-spinner small type="grow"></b-spinner>
+          {{userkey}}
+        </div>
+        <div v-else>
+          {{userkey}}
+        </div>
       </b-button>
     </div>
 
@@ -27,7 +35,7 @@
       <b-collapse id="user-borrowing-history">
         <b-card title="User Borrowing History">
           <div>
-            <b-table striped hover :items="borrowingHistroy"></b-table>
+            <b-table striped hover :items="borrowingHistroy" class="text-left"></b-table>
           </div>
         </b-card>
       </b-collapse>
@@ -76,6 +84,14 @@
         </b-col>
       </b-row>
     </b-container>
+
+    <b-container v-if="recommendedBooks!=null">
+      <b-card title="Recommended Books">
+        <div>
+          <b-table striped hover :items="recommendedBooks" class="text-left"></b-table>
+        </div>
+      </b-card>
+    </b-container>
   </div>
 </template>
 
@@ -93,6 +109,7 @@ export default {
       searchState: 'IDLE',
       serviceManager: null,
       userkeyText: 'Load User Profile',
+      recommendedBooks: null,
     };
   },
   computed: {
@@ -123,15 +140,18 @@ export default {
       return this.userName !== null;
     },
     isDisableUserkeyFunction() {
-      return (this.searchState === 'PENDING' || this.userName == null);
+      return (this.searchState === 'LOADING' || this.userName == null);
     },
     isDisableSearch() {
       return this.searchState !== 'READY';
     },
+    isLoading() {
+      return this.searchState === 'LOADING';
+    },
     userkey() {
       // eslint-disable-next-line no-nested-ternary
       return (this.searchState === 'READY') ? 'End Session'
-        : (this.searchState === 'IDLE') ? 'Load User Profile' : '...';
+        : (this.searchState === 'IDLE') ? 'Load User Profile' : 'Loading...';
     },
   },
   methods: {
@@ -146,8 +166,11 @@ export default {
     getIsbnString() {
       return JSON.stringify(this.borrowingHistroy.map((a) => a.ISBN));
     },
-    searchBookTitle(searchText) {
+    async searchBookTitle(searchText) {
+      // assume that when serviceManage is not instanciated, this function will not be called
       console.log(`search: ${searchText}`);
+      const recommendedBooks = await this.serviceManager.sendSearchText(searchText);
+      this.recommendedBooks = JSON.parse(recommendedBooks);
     },
     async userkeyFuntion() {
       this.serviceManager = new ServiceManager();
@@ -158,7 +181,7 @@ export default {
       switch (this.searchState) {
         case 'IDLE':
           {
-            this.searchState = 'PENDING';
+            this.searchState = 'LOADING';
             const success = await this.serviceManager.sendStartRequest(this.getIsbnString());
             console.log(`Home - IDLE: start session response ${success}`);
             this.searchState = success ? 'READY' : 'IDLE';
@@ -167,7 +190,7 @@ export default {
 
         case 'READY':
           {
-            this.searchState = 'PENDING';
+            this.searchState = 'LOADING';
             const success = await this.serviceManager.sendEndRequest();
             console.log(`Home - READY: end session response ${success}`);
             this.searchState = success ? 'IDLE' : 'READY';

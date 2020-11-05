@@ -25,14 +25,10 @@ export default class ServiceManager {
   }
 
   async sendSearchText(searchText) {
-    console.log('service-manager: sendSearchText');
-    const data = await this.apiService.postPlainText(`{"search-text": ${searchText}}`);
+    console.log(`service-manager: {"search-text": "${searchText}"}`);
+    const data = await this.apiService.postPlainText(`{"search-text": "${searchText}"}`);
     console.log(data);
-    // if (data.status === 'finish loading model') {
-    //   // this.state = data.state;
-    //   // eslint-disable-next-line no-template-curly-in-string
-    //   console.log(data);
-    // }
+    return data;
   }
 
   async sendEndRequest() {
