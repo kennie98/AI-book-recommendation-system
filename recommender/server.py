@@ -7,6 +7,7 @@ import json
 from datetime import datetime
 from similarity_ranking import SimilarityRanking
 import global_data
+import os
 
 app = Flask(__name__)
 
@@ -38,10 +39,12 @@ def index():
 
                 # load model
                 global_data.similarityRanker = SimilarityRanking()
-                global_data.proc = global_data.similarityRanker.loadModel('model.bin', 'book_titles.txt', '30')
+                global_data.proc = global_data.similarityRanker.loadModel('model.bin',
+                                                                          'book_titles.txt',
+                                                                          os.environ['N_BEST'])
 
                 # add 15 seconds delay for the model to be loaded
-                time.sleep(15)
+                time.sleep(12)
                 log("finished loading AI recommender model: Time = " + datetime.now().strftime("%H:%M:%S"))
                 global_data.state = "READY"
                 return jsonify({'status': 'finish loading model'})
@@ -81,4 +84,5 @@ def index():
 
 
 if __name__ == '__main__':
+    # os.environ['N_BEST'] = "20"
     app.run(host='0.0.0.0', port=3518, debug=True)

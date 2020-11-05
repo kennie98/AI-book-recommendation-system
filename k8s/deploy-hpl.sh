@@ -8,7 +8,7 @@ print_info "> Rebuild all docker images"
 echo ""
 #. $PRJ_DIR/recommender/local-build.sh --build
 cd $PRJ_DIR/manager
-docker build ./ -t manager_service-manager:latest
+docker build ./ -t service-manager:latest
 
 echo ""
 echo ""

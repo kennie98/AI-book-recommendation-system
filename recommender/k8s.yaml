@@ -18,11 +18,17 @@
       spec:
         containers:
         - name: ai-recommender
-          image: recommender_ai-recommender-server
+          image: ai-recommender-server:latest
           imagePullPolicy: Never
           ports:
             - containerPort: 3518
           command: ["python", "server.py"]
+          env:
+            - name: N_BEST
+              valueFrom:
+                configMapKeyRef:
+                  name: env-config
+                  key: N_BEST
 
 ---
 apiVersion: v1

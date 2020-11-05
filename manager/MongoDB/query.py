@@ -88,7 +88,7 @@ class MarcQuery:
 
         zippedBookListString = self.getZippedBookTitleStringFromAllRecords(bookList)
 
-        return zippedBookListString
+        return zippedBookListString, bookList
 
     @staticmethod
     def getListFromRecords(recordList, key):
@@ -157,7 +157,7 @@ if __name__ == '__main__':
     print("start: Time =", datetime.now().strftime("%H:%M:%S"))
 
     marcQuery = MarcQuery("../config.ini")
-    bookListString = marcQuery.getRelatedBookRecordsFromBorrowRecords(isbnString)
+    bookListString, bookList = marcQuery.getRelatedBookRecordsFromBorrowRecords(isbnString)
     del marcQuery
 
     # readers = marcQuery.getGenreRecords('Readers')

@@ -4,6 +4,7 @@ from datetime import datetime
 import sys
 import requests
 import global_data
+from helper import Helper
 import json
 import os
 
@@ -30,13 +31,16 @@ def index():
         try:
             if global_data.state == "IDLE":
                 log("received ISBN list string: Time = " + datetime.now().strftime("%H:%M:%S"))
-                log(request.__dict__)
-                log(request.data)
+                # log(request.__dict__)
+                # log(request.data)
                 # convert bytes object to string
                 isbnString = request.data.decode(encoding='UTF-8')
                 log("isbnString: " + isbnString + " Time = " + datetime.now().strftime("%H:%M:%S"))
                 global_data.marcQuery = MarcQuery(CFG_INI)
-                bookListString = global_data.marcQuery.getRelatedBookRecordsFromBorrowRecords(isbnString)
+
+                # store bookList in global_data
+                bookListString, global_data.bookList = global_data.marcQuery.getRelatedBookRecordsFromBorrowRecords(
+                    isbnString)
                 log("get the related book records and send the list to AI server: Time = " +
                     datetime.now().strftime("%H:%M:%S"))
 
@@ -58,7 +62,13 @@ def index():
                         status = json.loads(r.text).get("status")
                         if status == "finish search session":
                             global_data.state = "IDLE"
-                    return enableCORS(json.loads(r.text))
+                        return enableCORS(json.loads(r.text))
+                    else:
+                        log("get the recommended book title list from AI server: Time = " +
+                            datetime.now().strftime("%H:%M:%S"))
+                        log(r.text)
+                        title_list = json.loads(r.text)
+                        return enableCORS(json.dumps(Helper.getListFromRecords(global_data.bookList, title_list)))
         except:
             errors.append(
                 {
@@ -77,4 +87,5 @@ def index():
 
 
 if __name__ == '__main__':
+    # os.environ['AI_SERVER_ADDRESS'] = "http://localhost:3518"
     app.run(host='0.0.0.0', port=2354, debug=True)

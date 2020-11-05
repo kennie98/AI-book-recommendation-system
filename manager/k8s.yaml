@@ -18,7 +18,7 @@
       spec:
         containers:
         - name: service-manager
-          image: manager_service-manager
+          image: service-manager:latest
           imagePullPolicy: Never
           ports:
             - containerPort: 2354
