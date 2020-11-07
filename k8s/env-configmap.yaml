@@ -5,6 +5,6 @@ metadata:
   namespace: hpl
 data:
   N_BEST: "20"
-  AI_SERVER_ADDRESS: http://ai-recommender-service:3518
-  SERVICE_MANAGER_ADDRESS: http://manager-service:2354
+  AI_SERVER_ADDRESS: http://hpl-ai-recommender-service:3518
+  SERVICE_MANAGER_ADDRESS: http://hpl-manager-service:2354
 

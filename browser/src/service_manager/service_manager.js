@@ -1,14 +1,12 @@
 // eslint-disable-next-line import/no-named-as-default-member
 import APIService from '@/services/api_service';
 
-const ServiceManagerUrl = 'http://localhost:2354';
-
 export default class ServiceManager {
   state = 'IDLE';
 
   apiService = null;
 
-  constructor() {
+  constructor(ServiceManagerUrl) {
     this.apiService = new APIService(ServiceManagerUrl);
   }
 

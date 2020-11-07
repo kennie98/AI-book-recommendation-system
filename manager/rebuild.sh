@@ -1,5 +1,5 @@
 #!/bin/bash
 
-docker build ./ -t service-manager:latest
-kubectl delete deployment/service-manager-deployment
+docker build ./ -t hpl-service-manager:latest
+kubectl delete deployment/hpl-service-manager-deployment
 kubectl apply -f k8s.yaml

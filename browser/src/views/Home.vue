@@ -30,7 +30,6 @@
         </div>
       </b-button>
     </div>
-
     <b-container>
       <b-collapse id="user-borrowing-history">
         <b-card title="User Borrowing History">
@@ -108,6 +107,7 @@ export default {
       searchText: '',
       searchState: 'IDLE',
       serviceManager: null,
+      serviceManagerAddress: null,
       userkeyText: 'Load User Profile',
       recommendedBooks: null,
     };
@@ -173,7 +173,6 @@ export default {
       this.recommendedBooks = JSON.parse(recommendedBooks);
     },
     async userkeyFuntion() {
-      this.serviceManager = new ServiceManager();
       await this.serviceManager.getServerState();
       this.searchState = this.serviceManager.state;
       console.log(`searchState = ${this.searchState}`);
@@ -201,6 +200,11 @@ export default {
           break;
       }
     },
+  },
+  mounted() {
+    // eslint-disable-next-line no-undef
+    this.serviceManagerAddress = config.SERVICE_MANAGER_ADDRESS;
+    this.serviceManager = new ServiceManager(this.serviceManagerAddress);
   },
 };
 </script>
