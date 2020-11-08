@@ -38,7 +38,9 @@ metadata:
 spec:
   selector:
     app: service-manager
+  type: NodePort
   ports:
     - protocol: TCP
       port: 2354
       targetPort: 2354
+      nodePort: 32354
