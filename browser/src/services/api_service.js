@@ -9,21 +9,32 @@ export default class APIService {
 
   async get() {
     console.log('ApiService: get()');
-    const response = await axios.get(this.API_URL);
-    console.log(`ApiService: get result: ${response.data}`);
-    return response.data;
+    try {
+      const response = await axios.get(this.API_URL);
+      console.log(`ApiService: get result: ${response.data}`);
+      return response.data;
+    } catch (error) {
+      console.error(error);
+      return error;
+    }
   }
 
   async postPlainText(data) {
     console.log(`ApiService: post() - data: ${data}`);
-    const response = await axios.post(this.API_URL,
-      data,
-      {
-        headers: {
-          'Content-Type': 'text/plain',
-          Accept: '*/*',
-        },
-      });
-    return response.data;
+    try {
+      const response = await axios.post(this.API_URL,
+        data,
+        {
+          headers: {
+            'Content-Type': 'text/plain',
+            Accept: '*/*',
+          },
+        });
+      console.log(`ApiService: get result: ${response.data}`);
+      return response.data;
+    } catch (error) {
+      console.error(error);
+      return error;
+    }
   }
 }
