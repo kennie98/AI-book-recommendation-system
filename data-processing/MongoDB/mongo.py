@@ -1,6 +1,6 @@
 import pandas as pd
 from pymongo import MongoClient
-from marc import Marc
+from MongoDB.marc import Marc
 import re
 import sys
 

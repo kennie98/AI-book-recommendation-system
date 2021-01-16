@@ -152,12 +152,54 @@ def getAllBookTitles(marcQueryObj, ofile):
 
 
 if __name__ == '__main__':
-    isbnString = "['9780310714675', '9780763630614', '9781416925330', '9780310714569', '9780152062668', '9781553378907', '9781416915409', '9780142407752', '9780142408094', '9780310714545', '9780310714576', '9781250034366','9780545862615']"
+    # isbnString = "['9780310714675', '9780763630614', '9781416925330', '9780310714569', '9780152062668', '9781553378907', '9781416915409', '9780142407752', '9780142408094', '9780310714545', '9780310714576', '9781250034366','9780545862615']"
 
     print("start: Time =", datetime.now().strftime("%H:%M:%S"))
 
     marcQuery = MarcQuery("../config.ini")
-    bookListString, bookList = marcQuery.getRelatedBookRecordsFromBorrowRecords(isbnString)
+    print(marcQuery.getIsbnRecords("0767032357"))
+    print(marcQuery.getIsbnRecords("076787708X"))
+    print(marcQuery.getIsbnRecords("0788888218"))
+    print(marcQuery.getIsbnRecords("076704391X"))
+    print(marcQuery.getIsbnRecords("9781627896757"))
+    print(marcQuery.getIsbnRecords("0789484250"))
+    print(marcQuery.getIsbnRecords("1556706960"))
+    print(marcQuery.getIsbnRecords("9780062496775"))
+    print(marcQuery.getIsbnRecords("0780676521"))
+    print(marcQuery.getIsbnRecords("9780553510584"))
+    print(marcQuery.getIsbnRecords("9781616152451"))
+    print(marcQuery.getIsbnRecords("9780393082104"))
+    print(marcQuery.getIsbnRecords("9781554070398"))
+    print(marcQuery.getIsbnRecords("9781610398299"))
+    print(marcQuery.getIsbnRecords("1588340090"))
+    print(marcQuery.getIsbnRecords("1588171299"))
+    print(marcQuery.getIsbnRecords("9781531701956"))
+    print(marcQuery.getIsbnRecords("9780736427951"))
+    print(marcQuery.getIsbnRecords("079218890X"))
+    print(marcQuery.getIsbnRecords("0375421505"))
+
+    print(marcQuery.getIsbnRecords("0767032357"))
+    print(marcQuery.getIsbnRecords("9780545565431"))
+    print(marcQuery.getIsbnRecords("9781405282130"))
+    print(marcQuery.getIsbnRecords("076704391X"))
+    print(marcQuery.getIsbnRecords("9780316048699"))
+    print(marcQuery.getIsbnRecords("9781497656635"))
+    print(marcQuery.getIsbnRecords("9781452128696"))
+    print(marcQuery.getIsbnRecords("9781481423199"))
+    print(marcQuery.getIsbnRecords("0553801325"))
+    print(marcQuery.getIsbnRecords("9781606844199"))
+    print(marcQuery.getIsbnRecords("9780698197268"))
+    print(marcQuery.getIsbnRecords("9781627896757"))
+    print(marcQuery.getIsbnRecords("9780062183804"))
+    print(marcQuery.getIsbnRecords("9781927668412"))
+    print(marcQuery.getIsbnRecords("9780545528436"))
+    print(marcQuery.getIsbnRecords("9781503825314"))
+    print(marcQuery.getIsbnRecords("9780544313514"))
+    print(marcQuery.getIsbnRecords("9781460255933"))
+    print(marcQuery.getIsbnRecords("9781452400303"))
+    print(marcQuery.getIsbnRecords("9781582703923"))
+    # bookListString, bookList = marcQuery.getRelatedBookRecordsFromBorrowRecords(isbnString)
+
     del marcQuery
 
     # readers = marcQuery.getGenreRecords('Readers')

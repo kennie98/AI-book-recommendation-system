@@ -43,7 +43,7 @@ def index():
                                                                           'book_titles.txt',
                                                                           os.environ['N_BEST'])
 
-                # add 15 seconds delay for the model to be loaded
+                # add 12 seconds delay for the model to be loaded
                 time.sleep(12)
                 log("finished loading AI recommender model: Time = " + datetime.now().strftime("%H:%M:%S"))
                 global_data.state = "READY"
